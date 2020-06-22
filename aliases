@@ -1,0 +1,101 @@
+cat << 'HEREDOC' > /dev/shm/sr
+export LANG="en_US.utf8"
+export EDITOR="/usr/bin/vim"
+export VISUAL="/usr/bin/vim"
+export TERM=linux
+PATH=/usr/bin:$PATH:$HOME:$HOME/bin:/usr/sbin:/sbin:/scripts:/usr/local/ysa/bin/
+export HISTTIMEFORMAT='%a %d-%m-20%y %T: '
+shopt -s cdspell
+export PROMPT_COMMAND=""
+alias not="/usr/local/ysa/bin/test n"
+alias si="/usr/local/ysa/bin/test i"
+alias less="less -n"
+alias vi='vim'
+alias lk="ls -lh"
+alias ll='ls -lA'
+alias myip='echo "use Socket;socket(S,2,2,17);connect(S,sockaddr_in(1,inet_aton(\"1.2.3.4\")));@mip=sockaddr_in(getsockname(S));print inet_ntoa(\$mip[1]);"|perl'
+IP=`myip`
+alias ar='service httpd stop;service httpd stop;killall httpd &>/dev/null;killall -9 httpd &>/dev/null;sleep 1;service httpd start'
+alias mr='/scripts/restartsrv_mysql && /scripts/restartsrv_eximstats'
+alias el='less /var/log/exim_mainlog'
+alias ud='cat /etc/userdomains | grep --color ' grep='grep --color'
+alias pg='ps axfwu | grep -v grep | grep --color '
+alias p='ps axfw|less'
+alias vih='vi /usr/local/apache/conf/httpd.conf'
+alias mess="less /var/log/messages"
+alias epache="less /usr/local/apache/logs/error_log"
+alias ut="perl -e 'print scalar(localtime(@ARGV[0])) . \"\n\";'" 
+alias rdns="for i in \`ifconfig | grep inet| awk '{ print $2 }'| grep -v 127.0.0.1| cut -d: -f2\`; do echo -n \"\$i - \"; host \$i; done | grep -v 'not found'"
+alias cnb="~nagios/libexec/check_cpbackup"
+alias lnb="cat ~nagios/var/cpbackup_checker_report"
+alias sf='iptables -L -nv --line-numbers'
+alias sfn='iptables -t nat -L -nv'
+alias sfm='iptables -t mangle -L -nv'
+alias mp='mysqladmin pr ; uptime'
+alias ds='du | sort -nr | less'
+alias lg='lk | egrep "M " ; echo; lk | egrep "G "'
+alias gm='grep OK /var/log/messages | grep -v "(id)" | grep '
+alias out="[ \`readlink /proc/\$PPID/exe\` == '/usr/sbin/sshd' ] && kill \$PPID || { PPPID=\`cat /proc/\$PPID/stat|awk '{print \$4; }'\`; [ \`readlink /proc/\$PPPID/exe\` == '/usr/sbin/sshd' ] && kill \$PPPID; } || echo 'Cant get out'"
+alias pp='puppet agent -t'
+alias mt='mtop --dbuser root --password `cat ~/.my.cnf | grep pass | cut -f 2 -d\"`'
+alias pi='echo -ne "<? phpinfo(); ?>" >> _pi_.php && cp -a _pi_.php _pi_.php5 && OW=`pwd | cut -f3 -d/` && chown $OW:$OW _pi_.php _pi_.php5 && echo -e "\nhttp://`grep $OW /etc/trueuserdomains | cut -f1 -d:`/_pi_.php"'
+alias pir='rm -f _pi_.php _pi_.php5'
+alias um='for i in `cat /proc/mounts | grep virtfs | awk "{print $2}"` ; do umount $i ; done'
+alias rmrep='rm -fv /etc/yum.repos.d/CentOS-Y.repo /etc/yum.repos.d/CentOS-Addon-Y.repo; rm -rf /var/cache/yum/addon-y'
+alias yumy='prep ;((sleep 180; rm -rf /etc/yum.repos.d/CentOS-Y.repo /var/cache/yum/addon-y)&); yum'
+alias ffo="echo -n `hostname` $IP 'k:'`uname -a | awk '{print $3}'` '' && date '+%b %d %H:%M %Y %z overload [Alex]'" 
+alias hp="echo -ne \"\n\nAddType application/x-httpd-php5 .php\nAddHandler application/x-httpd-php5 .php\n\n\""
+alias bk='read ACC; ls -l /backup/cpbackup/*/$ACC/version | awk "{print \$6,\$7,\$8,\$9}" | sed -e "s/\/.*cpbackup\///" | sed -e "s/\/.*//" '
+alias gr='/etc/init.d/httpd graceful'
+alias hs='/etc/init.d/httpd status'
+alias hfs='/etc/init.d/httpd fullstatus'
+alias fa='iptables -I INPUT -p tcp --dport 80 -j DROP'
+alias ufa='iptables -D INPUT -p tcp --dport 80 -j DROP'
+alias set_ve_mem='vzlist -a; echo -n "VE ID: " ; read VEID; echo -n "GUARANTED (Mb): " ; read GUAR ; echo -n "BUSRTABLE (Mb): "; read PRIV; vzctl set $VEID --privvmpages $(($PRIV*1024/4)):$(($PRIV*1024/4)) --save; vzctl set $VEID --vmguarpages $(($GUAR*1024/4)):$(($GUAR*1024/4)) --save'
+alias ka="read PTRN ; while true ; do killall -9 $PTRN ; done"
+alias dlogs='mkdir  /root/info/ ; test -d /root/info && ( /bin/ps axuwfw > /root/info/`date +%Y.%m.%d.%H.%M.%S`.processes.list ; /usr/bin/mysqladmin proc > /root/info/`date +%Y.%m.%d.%H.%M.%S`.mysql.queries.list ; /etc/init.d/httpd fullstatus >  /root/info/`date +%Y.%m.%d.%H.%M.%S`.httpd.fullstatus ; /usr/bin/top -b -n 1 > /root/info/`date +%Y.%m.%d.%H.%M.%S`.top)'
+alias phpconf="/usr/local/cpanel/bin/rebuild_phpconf --current"
+alias gins='sed -e "s/ruby\*\s//" /etc/yum.conf -i ; yum clean all >/dev/null ; prep ; yum -y install rubygems --enablerepo=addon-y >/dev/null && ( mkdir /etc/god ; curl -s 72.34.45.195/~vovik/as/god_apache > /etc/god/apache ; god -c /etc/god/apache )'
+alias kp="read PATTERN; while true ; do killall \$PATTERN ; done"
+alias pr="/etc/init.d/puppet restart"
+alias gp="read SRV ; grep \$SRV /etc/puppet/manifests/nodes -r | cut -f1 -d:"
+alias md="mysql --defaults-file=/etc/mysql/clients/01.cnf"
+alias md3="mysql --defaults-file=/etc/mysql/clients/03.cnf"
+alias af="lynx -dump -width=500 http://localhost/whm-server-status"
+
+## Functions
+
+# Remove apache semaphores
+
+sema() { ipcs -s | egrep "nobody|httpd|apache" | awk ' { print $2 } ' | xargs ipcrm sem ; }
+
+## rkhpup() { curl -s https://raw.githubusercontent.com/Inkvisitor/SysAdminScripts/master/rkhunter-whitelist.sh| sh| egrep "^ALLOW|^SCRIPT"| awk 'BEGIN { print "rkhunter_whitelist:" } {print "  - ""'\''"$1"'\''"}' ; }
+
+# Rkhunter what to whitelist
+rkhpup() { curl -s https://raw.githubusercontent.com/Inkvisitor/SysAdminScripts/master/rkhunter-whitelist.sh | sh| egrep "^ALLOW|^SCRIPT|^XINET|^PORT"| awk 'BEGIN { print "\nrkhunter_whitelist:" } {print "  - ""'\''"$1"'\''"}' ; }
+
+# reverse IP for RBL lookups
+getrev() { host $1| awk -F"[ .]" '{print $2"."$3"."$4"."$5}' ; }
+
+# Spamhaus RBLs checks
+sblcheck() {
+    RESULT=$(dig +short @208.67.222.222 $( dig -x $1 | egrep '^;.*PTR$' | cut -c 2- | awk -F'.in-' '{print $1".sbl-xbl.spamhaus.org"}')| tail -2 | head -1);
+    [[ $RESULT =~ "127.0.0." ]] && echo "$1 is listed in SBL or XBL at spamhaus.org!" || echo "This ip is not found in SBL or XBL at spamhaus.org: $1"
+}
+
+cblcheck() { RESULT=$(dig +short @208.67.222.222 $( dig -x $1 | egrep '^;.*PTR$' | cut -c 2- | awk -F'.in-' '{print $1".zen.spamhaus.org"}')| tail -2 | head -1); [[ $RESULT =~ "127.0.0." ]] && echo "$1 is listed at zen.spamhaus.org!" || echo "This ip is not found at zen.spamhaus.org: $1" ; }
+
+PROMPT_COMMAND='echo -e "\033[m\033[38;5;2m"$(( $(sed -nu "s/MemFree:[\t ]\+\([0-9]\+\) kB/\1/p" /proc/meminfo)/1024))"\033[38;5;22m/"$(($(sed -nu "s/MemTotal:[\t ]\+\([0-9]\+\) kB/\1/Ip" /proc/meminfo)/1024 ))MB"\t\e[0;33m$(< /proc/loadavg)\033[m"'
+KERN=`uname -r`
+# CP=`cat /etc/redhat-release | cut -f1,3 -d" "`
+CP=`cat /etc/*release* 2>/dev/null| sort -u| egrep "DISTRIB_DESCRIPTION|release"| awk -F= '{print $NF}'`
+if [ -d /usr/local/cpanel/ ]; then
+	CPANVER=`/usr/local/cpanel/cpanel -V`;
+	export PS1=$'\\[-= \[\033[01;31m\]\H\[\033[00m\] =- \[\033[01;34m\] $IP -=- \e[0;35m$KERN \e[1;93m \xe2\x99\x82 $CP \xe2\x99\x82 \e[1;92mcPanel v.$CPANVER -=- \[\033[01;34m\] \u\[\033[00m\] \D{%T}] \w\n\\$ ';stty erase '^?';
+else export PS1=$'\\[-= \[\033[01;31m\]\H\[\033[00m\] =- \[\033[01;34m\] $IP -=- \e[0;35m$KERN \e[1;93m \xe2\x9a\x92 $CP \xe2\x9a\x92 \[\033[01;34m\]\u\[\033[00m\] \D{%T}] \w\n\\$ ';stty erase '^?';
+fi
+export FACTERLIB="/var/lib/puppet/facts"
+echo "================================================================================================================================================"
+not
+echo "================================================================================================================================================"
+si
